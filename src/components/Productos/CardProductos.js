@@ -1,4 +1,4 @@
-import { updateWebsite, getWebsite } from "../../firebase/api";
+import { updateProducto, getProducto } from "../../firebase/api";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +6,8 @@ import { FaDonate,FaEdit } from "react-icons/fa";
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
-export function CardOrdenes({ link }) {
+ function CardProducto({ link }) {
+  
   const navigate = useNavigate();
 
   const MySwal = withReactContent(Swal)
@@ -19,28 +20,34 @@ export function CardOrdenes({ link }) {
     buttonsStyling: false
   })
 
+
+
   const initialState = {
-    tipo: "",
-    activo: "",
-    pedido: "",
-    total: "",
-    fecha: "",
+    nombre: "",
+    valor: "",
   };
 
-  const [website, setWebsite] = useState(initialState);
+  const [Producto, setProducto] = useState(initialState);
 
   function asigned() {
-    setWebsite({ ...website, activo: false });
+    setProducto({ ...Producto, activo: false });
   }
   
   const getLinkById = async (id) => {
     try {
-      const doc = await getWebsite(id);
-      setWebsite({ ...doc.data() });
+      const doc = await getProducto(id);
+      setProducto({ ...doc.data() });
     } catch (error) {
       console.error(error);
     }
   };
+
+  
+  const formatterPeso = new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    minimumFractionDigits: 0
+  })
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,12 +64,12 @@ export function CardOrdenes({ link }) {
 
   if (result.isConfirmed) {
         // -------------------------------------
-      await updateWebsite(link.id, website);
+      await updateProducto(link.id, Producto);
       toast("Updated", {
         type: "success",
       });
     // Clean Form
-    setWebsite(initialState);
+    setProducto(initialState);
     // -------------------------------------
     window.location.reload();
 
@@ -80,14 +87,7 @@ export function CardOrdenes({ link }) {
 
       
   };
-  
-  const formatterPeso = new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP',
-    minimumFractionDigits: 0
-  })
 
-  const total = formatterPeso.format(link.total);
 
   useEffect(() => {
     if (link.id) {
@@ -98,51 +98,26 @@ export function CardOrdenes({ link }) {
 
   
   return (
-    <div className="card m-3 mb-2 card-website">
-      <div className="card-body" style={{backgroundColor: "white", color: "black", border: "solid black", borderRadius: "30px"}}>
-        
-      
-        <div className="d-flex justify-content-between">
-          <h4>{link.tipo}</h4>
-          
-          
-          <form onSubmit={
+    <div className="card m-1 mb-2 card-Producto">
+      <div className="card-body"  style={{backgroundColor: "white", color: "black", border: "solid black", borderRadius: "30px"}}>
+      <form onSubmit={
         handleSubmit} >
+        <div className="d-flex justify-content-between">
+          <p className="m-2"  style={{maxWidth: "120px"}}>{link.nombre}</p>
+          <h5 className="m-3">{formatterPeso.format(link.valor)}</h5>
+
           <button
             className="btn btn-danger btn-sm d-flex align-items-center"
-            onClick={(e) => {
-              e.stopPropagation();
-              getLinkById(link.id);
-              asigned();
-            }}
+            onClick={() => navigate(`/editProducto/${link.id}`)}
             style={{backgroundColor: "transparent", border: "none"}}
           >
-            <FaDonate style={{height: "40px", width: "40px", color: "#0DEE5B"}}/>
+            <FaEdit style={{height: "30px", width: "30px", color: "#11E1A8"}}/>
           </button>
-               </form>
-         
-
         </div>
-
-
-        <div className="d-flex justify-content-between">
-        <p>{link.pedido}</p>
-      
-        <button
-            className="btn btn-danger btn-sm d-flex align-items-center"
-            onClick={() => navigate(`/edit/${link.id}`)}
-            style={{backgroundColor: "transparent", border: "none"}}
-          >
-            <FaEdit style={{height: "40px", width: "40px", color: "#11E1A8"}}/>
-          </button>
-          </div>
-        <p>{total}</p>
-
-        <div className="d-flex justify-content-end">
-        <p>{link.fecha}</p>
-        </div>
-
+        </form>
       </div>
     </div>
   );
 }
+
+export default CardProducto;

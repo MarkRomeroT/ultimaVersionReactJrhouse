@@ -64,9 +64,9 @@ import { FaDonate,FaEdit } from "react-icons/fa";
   
   return (
     <div className="card m-1 mb-2 card-website">
-      <div className="card-body" style={{backgroundColor: "white", color: "black", border: "solid black"}}>
+      <div className="card-body"  style={{backgroundColor: "white", color: "black", border: "solid black", borderRadius: "30px"}}>
         <div className="d-flex justify-content-between">
-          <h4>Mesa #{link.numero}</h4>
+          <h4>{link.tipo}</h4>
           
           {/* <form onSubmit={
         handleSubmit} >

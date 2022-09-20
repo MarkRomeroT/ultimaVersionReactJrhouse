@@ -17,6 +17,11 @@ function NavBar(props) {
    function Historico(){
     navigate('/Historico');
    }
+
+   function Productos(){
+    navigate('/Productos');
+   }
+
     return (
       <>
          <Navbar bg="dark" variant='dark' expand="lg" sticky='top'>
@@ -34,7 +39,7 @@ function NavBar(props) {
           >
             
             <Nav.Link onClick={Ordenes}>Ordenes</Nav.Link>
-            <Nav.Link href="#action2">Productos</Nav.Link>
+            <Nav.Link onClick={Productos}>Productos</Nav.Link>
             <Nav.Link  onClick={Historico}>Historico</Nav.Link>
 
           </Nav>

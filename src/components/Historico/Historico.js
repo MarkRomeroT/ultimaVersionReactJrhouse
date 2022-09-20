@@ -20,8 +20,8 @@ import OptionsHistorico from "../../components/OptionsNav/OptionsHistorico";
     querySnapshot.forEach((doc) => {
       const activo = doc._document.data.value.mapValue.fields.activo.booleanValue;
       const fecha = doc._document.data.value.mapValue.fields.fecha.stringValue;
-      console.log("Fecha de la consulta: "+fecha);
-      console.log("Fecha del imput: "+fechaInput);
+      // console.log("Fecha de la consulta: "+fecha);
+      // console.log("Fecha del imput: "+fechaInput);
       if(activo === false && fecha === fechaInput){
         docs.push({ ...doc.data(), id: doc.id });
         docsTotal = (docsTotal + parseInt(doc._document.data.value.mapValue.fields.total.stringValue));

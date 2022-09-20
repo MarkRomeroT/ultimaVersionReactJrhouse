@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { saveWebsite, getWebsite, updateWebsite } from "../../firebase/api";
+import { saveWebsite, getWebsite, updateWebsite, getProductos } from "../../firebase/api";
 import { useParams, useNavigate } from "react-router-dom";
 import OptionsNav from "../OptionsNav/OptionsNavNew";
+import CardProductosAdd from "./CardProductosAdd";
 
 
 
 
 const initialState = {
-  numero: "",
+  tipo: "",
   activo: "",
   pedido: "",
   total: "",
@@ -23,13 +24,17 @@ const NewOrden = () => {
   const navigate = useNavigate();
 
   const handleInputChange = ({ target: { name, value } }) =>
+    // console.log(value);
     setWebsite({ ...website, [name]: value });
+
+
+
 
     const tiempoTranscurrido = Date.now();
     const hoy = new Date(tiempoTranscurrido);
-
     const date = hoy.toISOString().substring(0,10);
  
+
     function asigned() {
       setWebsite({ ...website, activo: true, fecha: date });
     }
@@ -70,10 +75,28 @@ const NewOrden = () => {
     }
   };
 
+
+  const [productos, setProductos] = useState([]);
+
+  const getProductosLinks = async () => {
+    const querySnapshot = await getProductos();
+    const docs = [];
+    querySnapshot.forEach((doc) => {
+    
+        docs.push({ ...doc.data(), id: doc.id });
+
+    });
+    setProductos(docs);
+  };
+
+
+  console.log(productos);
+
   useEffect(() => {
     if (params.id) {
       getLinkById(params.id);
     }
+    getProductosLinks();
   }, [params.id]);
 
   return (
@@ -81,37 +104,28 @@ const NewOrden = () => {
     <div className="col-md-4 offset-md-4">
       <form onSubmit={
         handleSubmit} className="card card-body bg-white">
-        <label htmlFor="url">Mesa:</label>
+        <label htmlFor="url">TIPO:</label>
         <div className="input-group mb-3">
-        <input
-            type="number"
-            className="form-control mb-2"
-            placeholder="1"
-            value={website.numero}
-            name="numero"
-            onChange={handleInputChange}
-          />
+        <select
+         className="form-control mb-2"
+         name="tipo"
+         value={website.tipo}
+         onChange={handleInputChange}
+        >
+          <option>...</option>
+          <option value="LOCAL">LOCAL</option>
+          <option value="DOMICILIO">DOMICILIO</option>
+        </select>
         </div>
 
-        <label htmlFor="description">Pedido:</label>
-        <textarea
-          rows="3"
-          className="form-control mb-3"
-          placeholder="Escribe el pedido del cliente"
-          name="pedido"
-          value={website.pedido}
-          onChange={handleInputChange}
-        ></textarea>
+        {productos.map((link) => (
+          
+          <div className="col-md-4" key={link.id}>
+            <CardProductosAdd link={link} />
+          </div>
+          
+      ))}
 
-        <label htmlFor="description">Total:</label>
-        <input
-            type="number"
-            className="form-control mb-2"
-            placeholder="1000000"
-            value={website.total}
-            name="total"
-            onChange={handleInputChange}
-          />
 
         <button
           type="submit"         
